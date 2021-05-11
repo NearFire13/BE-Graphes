@@ -44,60 +44,36 @@ public class Path {
 	        return new Path(graph, nodes.get(0));
 		}
         
-        int nodeCounter = 1;
-        Arc fastestArc = null;
-        double TimeToTravel = 500000.0;
-        for(Node node : nodes)
+        for (int i = 0; i < nodes.size()-1; i++)
         {
-        	for(Node nodeGraph : graph.getNodes())
-        	{
-	    		if(nodeCounter < nodes.size())
-	    		{
-		        	if(nodeGraph.getSuccessors().size() > 1)
-		        	{
-			        	for(Arc arcGraph : nodeGraph.getSuccessors())
-			        	{
-			        		if(arcGraph.getOrigin() == node && node.getSuccessors().size() > 1)
-			        		{
-			        			for(Arc arcOrigin : node.getSuccessors())
-				        		{
-			        				if(arcOrigin.getDestination() == graph.getNodes().get(arcOrigin.getOrigin().getId()+1) && arcOrigin.getMinimumTravelTime() < TimeToTravel)
-			        				{
-								        TimeToTravel = arcGraph.getMinimumTravelTime();
-								        fastestArc = arcGraph;
-			        				}
-				        		}
-			        		}
-			        		else
-			        		{
-				        		if(arcGraph.getMinimumTravelTime() < TimeToTravel)
-				        		{
-				        			TimeToTravel = arcGraph.getMinimumTravelTime();
-				        			fastestArc = arcGraph;
-				        		}
-			        		}
-			        	}
-		        	}
-		        	else
-		        	{
-		        		if(nodeGraph.getSuccessors().size() == 1)
-		        		{
-		        			Arc arcGraph = nodeGraph.getSuccessors().get(0);
-		        			TimeToTravel = arcGraph.getMinimumTravelTime();
-		        			fastestArc = arcGraph;
-		        		}
-		        	}
-		        	arcs.add(fastestArc);
-	    		}
-	    		nodeCounter++;
-        	}
+            double timeToTravel = Double.MAX_VALUE;
+            Arc fastestArc = null;
+            boolean isValid = false;
+
+            for(Arc arc : graph.get(nodes.get(i).getId()).getSuccessors())
+            {
+                double currentTime = arc.getMinimumTravelTime();
+
+                if(arc.getDestination() == nodes.get(i+1))
+                {
+                    isValid = true;
+
+                    if (timeToTravel > currentTime)
+                    {
+                    	timeToTravel = currentTime;
+                        fastestArc = arc;
+                    }
+                }
+            }
+
+            if (!isValid)
+            {
+            	throw new IllegalArgumentException();
+            }
+
+            arcs.add(fastestArc);
         }
-        
-	    Path path = new Path(graph, arcs);
-	    if (!path.isValid()) {
-	        throw new IllegalArgumentException("Cannot create fastest path from two consecutive nodes that are not connected in the graph.");
-	    }
-	    return path;
+        return new Path(graph, arcs);
     }
 
     /**

@@ -1,6 +1,7 @@
 package org.insa.graphs.gui.simple;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
@@ -74,7 +75,7 @@ public class Launch {
         final Path path = pathReader.readPath(graph);
 
         // TODO: Draw the path.
-        drawing.drawPath(path);
+        drawing.drawPath(path, Color.GREEN);
     }
 
 }

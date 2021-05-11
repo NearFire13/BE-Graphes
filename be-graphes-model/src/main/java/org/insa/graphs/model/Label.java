@@ -1,7 +1,4 @@
-package org.insa.graphs.algorithm;
-
-import org.insa.graphs.model.Arc;
-import org.insa.graphs.model.Node;
+package org.insa.graphs.model;
 
 public class Label implements Comparable<Label> {
 	
