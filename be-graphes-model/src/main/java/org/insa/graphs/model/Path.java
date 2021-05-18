@@ -93,42 +93,45 @@ public class Path {
             throws IllegalArgumentException {
         List<Arc> arcs = new ArrayList<Arc>();
         // TODO:
-        Arc arcShortest = null;
-        int nodeCounter = 1;
-        for(Node node : nodes)
+        if(nodes.isEmpty())
         {
-        	double arcLength = 100000.0;
-    		if(nodeCounter < nodes.size())
-    		{
-    			if(node.getSuccessors().size() > 1)
-    			{
-		        	for(Arc arc : node.getSuccessors())
-		        	{
-		        		if(arc.getLength() < arcLength)
-		        		{
-		        			arcLength = arc.getLength();
-		        			arcShortest = arc;
-		        		}
-		        	}
-        		}
-            	else
-            	{
-            		arcShortest = node.getSuccessors().get(0);
-            	}
-    			arcs.add(arcShortest);
-        	}
-    		else
-    		{
-    			if(nodes.size() == 1)
-    				return new Path(graph, node);
-    		}
-    		nodeCounter++;
+        	return new Path(graph);
         }
-        Path path = new Path(graph, arcs);
-        if (!path.isValid()) {
-            throw new IllegalArgumentException("Cannot create shortest path from two consecutive nodes that are not connected in the graph.");
+        else if(nodes.size() == 1)
+		{
+	        return new Path(graph, nodes.get(0));
+		}
+        
+        for (int i = 0; i < nodes.size()-1; i++)
+        {
+            double arcLength = Double.MAX_VALUE;
+            Arc shortestArc = null;
+            boolean isValid = false;
+
+            for(Arc arc : graph.get(nodes.get(i).getId()).getSuccessors())
+            {
+                double currentLength = arc.getLength();
+
+                if(arc.getDestination() == nodes.get(i+1))
+                {
+                    isValid = true;
+
+                    if (arcLength > currentLength)
+                    {
+                    	arcLength = currentLength;
+                    	shortestArc = arc;
+                    }
+                }
+            }
+
+            if (!isValid)
+            {
+            	throw new IllegalArgumentException();
+            }
+
+            arcs.add(shortestArc);
         }
-        return path;
+        return new Path(graph, arcs);
     }
 
     /**
