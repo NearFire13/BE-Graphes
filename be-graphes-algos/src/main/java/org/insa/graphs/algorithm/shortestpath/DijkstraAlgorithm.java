@@ -35,7 +35,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         //Association d'un label à chaque sommet.
         for (int i = 0; i < labels.length; ++i) {
         	System.out.println(i + " " + data.getGraph().getNodes().get(i).getId());
-        	labels[i] = new Label(data.getGraph().getNodes().get(i), false, Double.MAX_VALUE, null);
+        	labels[i] = new Label(data.getGraph().getNodes().get(i), false, Double.POSITIVE_INFINITY, null);
         }
         labels[data.getOrigin().getId()].setCost(0);
         
@@ -81,8 +81,8 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
                     double w = data.getCost(arc);
                     double oldDistance = labels[y.getId()].getCost();
                     double newDistance = labels[x.getCurrentVertex().getId()].getCost() + w;
-                    
-                    if (Double.isInfinite(oldDistance) && Double.isFinite(newDistance)) {
+
+                    if(Double.isInfinite(oldDistance) && Double.isFinite(newDistance)) {
                         notifyNodeReached(arc.getDestination());
                     }
                     
