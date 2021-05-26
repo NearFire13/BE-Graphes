@@ -48,6 +48,10 @@ public class Label implements Comparable<Label> {
 		return this.cost;
 	}
 	
+	public double getTotalCost() {
+		return this.cost;
+	}
+	
 	public Arc getFather() {
 		return father;
 	}
@@ -67,10 +71,14 @@ public class Label implements Comparable<Label> {
 	public void setFather(Arc father) {
 		this.father = father;
 	}
+	
+	public double getEstimatedCost() {
+		return 0;
+	}
 
 	@Override
 	public int compareTo(Label other) {
-        return Double.compare(getCost(), other.getCost());
+        return Double.compare(this.getTotalCost(), other.getTotalCost());
 	}
 
 }

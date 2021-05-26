@@ -17,10 +17,20 @@ import org.insa.graphs.model.Path;
 public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 	
     // List of labels
-    private static Label[] labels;
+    protected Label[] labels;
 
     public DijkstraAlgorithm(ShortestPathData data) {
         super(data);
+    }
+    
+    public void initLabels(ShortestPathData data) {
+    	labels = new Label[data.getGraph().getNodes().size()];
+    	
+        //Association d'un label à chaque sommet.
+        for (int i = 0; i < labels.length; ++i) {
+        	System.out.println(i + " " + data.getGraph().getNodes().get(i).getId());
+        	labels[i] = new Label(data.getGraph().getNodes().get(i), false, Double.POSITIVE_INFINITY, null);
+        }
     }
 
     @Override
@@ -29,13 +39,8 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         ShortestPathSolution solution;
         // TODO:
         Graph graph = data.getGraph();
-        labels = new Label[graph.getNodes().size()];
         
-        //Association d'un label à chaque sommet.
-        for (int i = 0; i < labels.length; ++i) {
-        	System.out.println(i + " " + data.getGraph().getNodes().get(i).getId());
-        	labels[i] = new Label(data.getGraph().getNodes().get(i), false, Double.POSITIVE_INFINITY, null);
-        }
+        initLabels(data);
         labels[data.getOrigin().getId()].setCost(0);
         
         BinaryHeap<Label> myHeap = new BinaryHeap<Label>();
@@ -62,9 +67,10 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         	catch (ElementNotFoundException e) { }
         	labels[x.getCurrentVertex().getId()].setMark(true);
         	//System.out.println(labels[x.getCurrentVertex().getId()].getCost()); // Vérification coût croissant
+        	//System.out.println(labels[x.getCurrentVertex().getId()].getTotalCost()); // Vérification coût croissant
         	
         	/*
-        	 * System.out.println("Nombre de Successeurs : " + x.getCurrentVertex().getSuccessors().size());// Vérification du nombre de successeurs parcourus
+        	 * System.out.println("Nombre de Successeurs : " + x.getCurrentVertex().getSuccessors().size()); // Vérification du nombre de successeurs parcourus
         	 * int compteur = 0;
         	 */
         	for(Arc arc : x.getCurrentVertex().getSuccessors())
