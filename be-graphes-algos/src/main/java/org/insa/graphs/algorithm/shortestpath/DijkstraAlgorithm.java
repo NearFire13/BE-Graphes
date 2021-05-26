@@ -2,13 +2,12 @@ package org.insa.graphs.algorithm.shortestpath;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
+import org.insa.graphs.algorithm.AbstractInputData.Mode;
+import org.insa.graphs.algorithm.AbstractSolution.Status;
 import org.insa.graphs.algorithm.utils.BinaryHeap;
 import org.insa.graphs.algorithm.utils.ElementNotFoundException;
 import org.insa.graphs.algorithm.utils.EmptyPriorityQueueException;
-import org.insa.graphs.algorithm.AbstractInputData.Mode;
-import org.insa.graphs.algorithm.AbstractSolution.Status;
 import org.insa.graphs.model.Arc;
 import org.insa.graphs.model.Graph;
 import org.insa.graphs.model.Label;
@@ -62,13 +61,21 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         	}
         	catch (ElementNotFoundException e) { }
         	labels[x.getCurrentVertex().getId()].setMark(true);
+        	//System.out.println(labels[x.getCurrentVertex().getId()].getCost()); // Vérification coût croissant
         	
-        	
+        	/*
+        	 * System.out.println("Nombre de Successeurs : " + x.getCurrentVertex().getSuccessors().size());// Vérification du nombre de successeurs parcourus
+        	 * int compteur = 0;
+        	 */
         	for(Arc arc : x.getCurrentVertex().getSuccessors())
         	{
         		if (!data.isAllowed(arc)) {
         			continue;
         		}
+        		/*
+        		 * compteur++;
+        		 * System.out.println("Successeur n°" + compteur + " : " + arc); // Vérification du nombre de successeurs parcourus
+        		*/
         		
         		Node y;
         		try {
@@ -103,6 +110,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         			}
         		}
         	}
+        	//System.out.println();
         }
         
         if (!labels[data.getDestination().getId()].isMark())

@@ -277,22 +277,22 @@ public class Path {
         // TODO:
     	if(this.isEmpty()) return true;
     	if(this.size() == 1 && this.arcs.size() == 0) return true;
-    	Arc arc1 = null;
-    	boolean originOK = false;
-    	for(Arc arc : arcs) {
-    		if(arc == arcs.get(0)) {
-    			if(arc.getOrigin() == this.getOrigin())
-    			{
-    				originOK = true;
-    			}
-    			arc1 = arc;
-    			continue;
-    		}
-    		if((arc1.getDestination() == arc.getOrigin()) && (originOK == true)) {
-    			return true;
-    		} else return false;
-    	}
-        return false;
+    	
+    	boolean isOK = false;
+    	
+        if (this.arcs.get(0).getOrigin() == this.getOrigin()) {
+        	isOK = true ; 
+        }
+
+        for(int i = 0; i < this.arcs.size()-2; i++)
+        {
+        	if (isOK && this.arcs.get(i).getDestination() != this.arcs.get(i+1).getOrigin())
+        	{
+        		isOK = false ; 
+        	}
+        }
+        
+        return isOK;
     }
 
     /**
