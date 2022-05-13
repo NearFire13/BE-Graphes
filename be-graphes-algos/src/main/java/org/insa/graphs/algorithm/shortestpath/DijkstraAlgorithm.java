@@ -7,30 +7,37 @@ import org.insa.graphs.algorithm.AbstractInputData.Mode;
 import org.insa.graphs.algorithm.AbstractSolution.Status;
 import org.insa.graphs.algorithm.utils.BinaryHeap;
 import org.insa.graphs.model.Arc;
-import org.insa.graphs.model.Graph;
 import org.insa.graphs.model.Label;
 import org.insa.graphs.model.Node;
 import org.insa.graphs.model.Path;
 
 public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 
+	protected Label labels[];
+	
     public DijkstraAlgorithm(ShortestPathData data) {
         super(data);
+    }
+    
+    public void initLabels(ShortestPathData data) {
+    	final int nbNodes = data.getGraph().size();
+        
+    	labels = new Label[nbNodes];
+        
+        for(int i = 0; i < nbNodes; i++)
+        	labels[i] = new Label(data.getGraph().getNodes().get(i), false,  Double.POSITIVE_INFINITY, null);
     }
 
     @Override
     protected ShortestPathSolution doRun() {
         final ShortestPathData data = getInputData();
-        Graph graph = data.getGraph();
-
-        final int nbNodes = graph.size();
-        Label labels[] = new Label[nbNodes];
+        
         BinaryHeap<Label> myHeap = new BinaryHeap<Label>();
         
-        for(int i = 0; i < nbNodes; i++)
-        	labels[i] = new Label(graph.getNodes().get(i), false,  Double.POSITIVE_INFINITY, null);
-        
+        initLabels(data);
+
         labels[data.getOrigin().getId()].setCost(0);
+        
         myHeap.insert(labels[data.getOrigin().getId()]);
         
         // Notify observers about the first event (origin processed).
@@ -40,7 +47,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         {
         	Label x = myHeap.deleteMin();
         	x.setMark(true);
-        	//System.out.println(x.getCost()); // Le coût est bien croissant au fur et à mesure des itérations.
+        	//System.out.println(x.getTotalCost()); // Le coût est bien croissant au fur et à mesure des itérations.
         	
         	//Notify observers about the nodes marked.
         	notifyNodeMarked(x.getNode());
@@ -57,8 +64,8 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         			
         			// Retrieve weight of the arc.
         			double w = data.getCost(arc);
-        			double oldDistance = y.getCost();
-        			double newDistance = x.getCost() + w;
+        			double oldDistance = y.getTotalCost();
+        			double newDistance = x.getTotalCost() + w;
         			
         			if (Double.isInfinite(oldDistance) && Double.isFinite(newDistance)) {
         				notifyNodeReached(arc.getDestination());
@@ -67,13 +74,19 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         			// Check if new distances would be better, if so update...
         			if (oldDistance > newDistance)
         			{
-        				if(y.getCost() != Double.POSITIVE_INFINITY) // Check if y exists in the heap, and in this case, the cost of y has been changed. 
+        				if(y.getTotalCost() != Double.POSITIVE_INFINITY) // Check if y exists in the heap, and in this case, the cost of y has been changed. 
         				{
         					myHeap.remove(y);
         				}
-        				y.setCost(x.getCost() + w);
+        				y.setCost(x.getTotalCost() + w);
         				myHeap.insert(y);
         				y.setFatherArc(arc);
+        			}
+        			double costReal = y.getCost();
+        			double costEstimated = y.getTotalCost() - y.getCost();
+        			if(costEstimated > costReal) {
+	        			System.out.println("Coût réel : " + costReal);
+	        			System.out.println("Coût estimé :" + costEstimated);
         			}
         		}
         	}
@@ -106,11 +119,11 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
             
             if(data.getMode() == Mode.LENGTH)
             {
-            	path = Path.createShortestPathFromNodes(graph, nodes);
+            	path = Path.createShortestPathFromNodes(data.getGraph(), nodes);
             }
             else
             {
-            	path = Path.createFastestPathFromNodes(graph, nodes);
+            	path = Path.createFastestPathFromNodes(data.getGraph(), nodes);
             }
 
             // Create the final solution.
