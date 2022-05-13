@@ -1,16 +1,16 @@
 package org.insa.graphs.model;
 
-public class Label {
+public class Label implements Comparable<Label> {
 	
 	private Node node;
 	
 	private boolean mark;
 	
-	private int cost;
+	private double cost;
 	
 	private Arc fatherArc;
 	
-	public Label(Node node, boolean mark,  int cost, Arc fatherArc)
+	public Label(Node node, boolean mark,  double cost, Arc fatherArc)
 	{
 		this.node = node;
 		this.mark = mark;
@@ -34,11 +34,11 @@ public class Label {
 		this.mark = mark;
 	}
 	
-	public int getCost() {
+	public double getCost() {
 		return this.cost;
 	}
 	
-	public void setCost(int cost) {
+	public void setCost(double cost) {
 		this.cost = cost;
 	}
 	
@@ -48,6 +48,11 @@ public class Label {
 	
 	public void setFatherArc(Arc fatherArc) {
 		this.fatherArc = fatherArc;
+	}
+
+	@Override
+	public int compareTo(Label other) {
+		return Double.compare(getCost(), other.getCost());
 	}
 
 }
