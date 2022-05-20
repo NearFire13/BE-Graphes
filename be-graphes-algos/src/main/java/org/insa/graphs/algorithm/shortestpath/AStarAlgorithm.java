@@ -20,7 +20,17 @@ public class AStarAlgorithm extends DijkstraAlgorithm {
         	Node myCurrentNode = data.getGraph().getNodes().get(i);
         	Node myDestination = data.getDestination();
 
-        	labels[i] = new LabelStar(myCurrentNode, false,  Double.POSITIVE_INFINITY, myCurrentNode.getPoint().distanceTo(myDestination.getPoint()), null);
+        	if(data.getMode() == Mode.LENGTH) // Mode Longueur
+        	{
+        		labels[i] = new LabelStar(myCurrentNode, false,  Double.POSITIVE_INFINITY, myCurrentNode.getPoint().distanceTo(myDestination.getPoint()), null);
+        	}
+        	else // Mode Temps
+        	{
+        		if(data.getGraph().getGraphInformation().hasMaximumSpeed())
+        			labels[i] = new LabelStar(myCurrentNode, false,  Double.POSITIVE_INFINITY, myCurrentNode.getPoint().distanceTo(myDestination.getPoint())/data.getGraph().getGraphInformation().getMaximumSpeed(), null); // t = d/v 
+        		else
+        			labels[i] = new LabelStar(myCurrentNode, false,  Double.POSITIVE_INFINITY, myCurrentNode.getPoint().distanceTo(myDestination.getPoint())/130, null); // Choix arbitraire de 130, vitesse par défaut
+        	}
         }
     }
 

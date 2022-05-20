@@ -47,7 +47,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         {
         	Label x = myHeap.deleteMin();
         	x.setMark(true);
-        	//System.out.println(x.getTotalCost()); // Le coût est bien croissant au fur et à mesure des itérations.
+        	//System.out.println(x.getCost()); // Le coût est bien croissant au fur et à mesure des itérations.
         	
         	//Notify observers about the nodes marked.
         	notifyNodeMarked(x.getNode());
@@ -64,8 +64,8 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         			
         			// Retrieve weight of the arc.
         			double w = data.getCost(arc);
-        			double oldDistance = y.getTotalCost();
-        			double newDistance = x.getTotalCost() + w;
+        			double oldDistance = y.getCost();
+        			double newDistance = x.getCost() + w;
         			
         			if (Double.isInfinite(oldDistance) && Double.isFinite(newDistance)) {
         				notifyNodeReached(arc.getDestination());
@@ -74,20 +74,23 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         			// Check if new distances would be better, if so update...
         			if (oldDistance > newDistance)
         			{
-        				if(y.getTotalCost() != Double.POSITIVE_INFINITY) // Check if y exists in the heap, and in this case, the cost of y has been changed. 
+        				if(y.getCost() != Double.POSITIVE_INFINITY) // Check if y exists in the heap, and in this case, the cost of y has been changed. 
         				{
         					myHeap.remove(y);
         				}
-        				y.setCost(x.getTotalCost() + w);
+        				y.setCost(x.getCost() + w);
         				myHeap.insert(y);
         				y.setFatherArc(arc);
         			}
+        			/*
+        			// Vérifie que le coût estimé est bien une borne inférieure du coût réel afin de garantir l'optimalité du résultat
         			double costReal = y.getCost();
-        			double costEstimated = y.getTotalCost() - y.getCost();
-        			if(costEstimated > costReal) {
+        			double costEstimated = y.getCost() - y.getCost();
+        			if(costEstimated > costReal) { // Si un coût apparait, l'optimalité n'est pas garantie
 	        			System.out.println("Coût réel : " + costReal);
 	        			System.out.println("Coût estimé :" + costEstimated);
         			}
+        			*/
         		}
         	}
         }
