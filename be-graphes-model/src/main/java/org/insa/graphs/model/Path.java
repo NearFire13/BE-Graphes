@@ -45,26 +45,23 @@ public class Path {
         {
         	isOK = false;
         	Node node = nodes.get(i);
-        	if(node.getId() != nodes.size()-1)
+        	if(node.hasSuccessors())
         	{
-        		if(node.hasSuccessors())
+        		double timeArcPrec = Double.MAX_VALUE;
+        		for(Arc arc : node.getSuccessors())
         		{
-        			double timeArcPrec = Double.MAX_VALUE;
-        			for(Arc arc : node.getSuccessors())
+        			if(arc.getDestination() == nodes.get(i+1))
         			{
-        				if(arc.getDestination() == nodes.get(i+1))
-        				{
-        					isOK = true;
-	        				if(arc.getMinimumTravelTime() < timeArcPrec)
-	        				{
+        				isOK = true;
+	        			if(arc.getMinimumTravelTime() < timeArcPrec)
+	        			{
 	        					
-	        					timeArcPrec = arc.getMinimumTravelTime();
-	        					chooseArc = arc;
-	        				}
-        				}
-			        }
-        			arcs.add(chooseArc);
-	        	}
+	        				timeArcPrec = arc.getMinimumTravelTime();
+	        				chooseArc = arc;
+	        			}
+        			}
+        		}
+        		arcs.add(chooseArc);
 	        }
         }
         
@@ -103,26 +100,23 @@ public class Path {
         {
         	isOK = false;
         	Node node = nodes.get(i);
-        	if(node.getId() != nodes.size()-1)
+        	if(node.hasSuccessors())
         	{
-        		if(node.hasSuccessors())
+        		float lengthArcPrec = Float.MAX_VALUE;
+        		for(Arc arc : node.getSuccessors())
         		{
-        			float lengthArcPrec = Float.MAX_VALUE;
-        			for(Arc arc : node.getSuccessors())
+        			if(arc.getDestination() == nodes.get(i+1))
         			{
-        				if(arc.getDestination() == nodes.get(i+1))
-        				{
-        					isOK = true;
-	        				if(arc.getLength() < lengthArcPrec)
-	        				{
+        				isOK = true;
+	        			if(arc.getLength() < lengthArcPrec)
+	        			{
 	        					
-	        					lengthArcPrec = arc.getLength();
-	        					chooseArc = arc;
-	        				}
-        				}
-			        }
-			        arcs.add(chooseArc);
-	        	}
+	        				lengthArcPrec = arc.getLength();
+	        				chooseArc = arc;
+	        			}
+        			}
+        		}
+			    arcs.add(chooseArc);
 	        }
         }
         

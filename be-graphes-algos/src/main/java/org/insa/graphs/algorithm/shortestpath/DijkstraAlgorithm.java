@@ -6,6 +6,7 @@ import java.util.Collections;
 import org.insa.graphs.algorithm.AbstractInputData.Mode;
 import org.insa.graphs.algorithm.AbstractSolution.Status;
 import org.insa.graphs.algorithm.utils.BinaryHeap;
+import org.insa.graphs.algorithm.utils.EmptyPriorityQueueException;
 import org.insa.graphs.model.Arc;
 import org.insa.graphs.model.Label;
 import org.insa.graphs.model.Node;
@@ -96,29 +97,28 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         }
         ShortestPathSolution solution = null;
 
-        // Destination has no predecessor, the solution is infeasible...
-        if (labels[data.getDestination().getId()].getFatherArc() == null) {
+        if (!labels[data.getDestination().getId()].isMark())
+        {
             solution = new ShortestPathSolution(data, Status.INFEASIBLE);
         }
         else {
             // The destination has been found, notify the observers.
             notifyDestinationReached(data.getDestination());
 
-            // Create the path from the array of predecessors...
-            ArrayList<Arc> arcs = new ArrayList<>();
-            Arc arc = labels[data.getDestination().getId()].getFatherArc();
-            while (arc != null) {
-                arcs.add(arc);
-                arc = labels[arc.getOrigin().getId()].getFatherArc();
-            }
-
-            // Reverse the path...
-            Collections.reverse(arcs);
+            // Create the path from the array of nodes...
+	        ArrayList<Node> nodes = new ArrayList<>();
+	        Node node = data.getDestination();
+	        nodes.add(node);
+	        while (!(node == data.getOrigin()))
+	        {
+	            Arc fatherNode = labels[node.getId()].getFatherArc();
+	            nodes.add(fatherNode.getOrigin());
+	            node = fatherNode.getOrigin();
+	        }
+	        // Reverse the path...
+	        Collections.reverse(nodes);
             
             Path path = null;
-            ArrayList<Node> nodes = new ArrayList<>();
-            for(Arc myArc : arcs)
-            	nodes.add(myArc.getOrigin());
             
             if(data.getMode() == Mode.LENGTH)
             {
